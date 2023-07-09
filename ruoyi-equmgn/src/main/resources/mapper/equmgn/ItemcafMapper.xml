@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.ItemcafMapper">
+    
+    <resultMap type="Itemcaf" id="ItemcafResult">
+        <result property="itemcafName"    column="itemcaf_name"    />
+        <result property="itemcafFatherid"    column="itemcaf_fatherid"    />
+        <result property="itemcafDisplayOrder"    column="itemcaf_display_order"    />
+    </resultMap>
+
+    <sql id="selectItemcafVo">
+        select itemcaf_name, itemcaf_fatherid, itemcaf_display_order from itemcaf
+    </sql>
+
+    <select id="selectItemcafList" parameterType="Itemcaf" resultMap="ItemcafResult">
+        <include refid="selectItemcafVo"/>
+        <where>  
+            <if test="itemcafName != null  and itemcafName != ''"> and itemcaf_name like concat('%', #{itemcafName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectItemcafByItemcafName" parameterType="String" resultMap="ItemcafResult">
+        <include refid="selectItemcafVo"/>
+        where itemcaf_name = #{itemcafName}
+    </select>
+        
+    <insert id="insertItemcaf" parameterType="Itemcaf">
+        insert into itemcaf
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="itemcafName != null and itemcafName != ''">itemcaf_name,</if>
+            <if test="itemcafFatherid != null">itemcaf_fatherid,</if>
+            <if test="itemcafDisplayOrder != null">itemcaf_display_order,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="itemcafName != null and itemcafName != ''">#{itemcafName},</if>
+            <if test="itemcafFatherid != null">#{itemcafFatherid},</if>
+            <if test="itemcafDisplayOrder != null">#{itemcafDisplayOrder},</if>
+         </trim>
+    </insert>
+
+    <update id="updateItemcaf" parameterType="Itemcaf">
+        update itemcaf
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="itemcafFatherid != null">itemcaf_fatherid = #{itemcafFatherid},</if>
+            <if test="itemcafDisplayOrder != null">itemcaf_display_order = #{itemcafDisplayOrder},</if>
+        </trim>
+        where itemcaf_name = #{itemcafName}
+    </update>
+
+    <delete id="deleteItemcafByItemcafName" parameterType="String">
+        delete from itemcaf where itemcaf_name = #{itemcafName}
+    </delete>
+
+    <delete id="deleteItemcafByItemcafNames" parameterType="String">
+        delete from itemcaf where itemcaf_name in 
+        <foreach item="itemcafName" collection="array" open="(" separator="," close=")">
+            #{itemcafName}
+        </foreach>
+    </delete>
+</mapper>

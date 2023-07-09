@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.LocbindMapper">
+    
+    <resultMap type="Locbind" id="LocbindResult">
+        <result property="locbindWorkshop"    column="locbind_workshop"    />
+        <result property="locbindLocation"    column="locbind_location"    />
+        <result property="locbindUsername"    column="locbind_username"    />
+        <result property="locbindNickname"    column="locbind_nickname"    />
+        <result property="locbindOperator"    column="locbind_operator"    />
+        <result property="locbindOperationTime"    column="locbind_operation_time"    />
+    </resultMap>
+
+    <sql id="selectLocbindVo">
+        select locbind_workshop, locbind_location, locbind_username, locbind_nickname, locbind_operator, locbind_operation_time from locbind
+    </sql>
+
+    <select id="selectLocbindList" parameterType="Locbind" resultMap="LocbindResult">
+        <include refid="selectLocbindVo"/>
+        <where>  
+            <if test="locbindLocation != null  and locbindLocation != ''"> and locbind_location = #{locbindLocation}</if>
+            <if test="locbindUsername != null  and locbindUsername != ''"> and locbind_username like concat('%', #{locbindUsername}, '%')</if>
+            <if test="locbindOperationTime != null "> and locbind_operation_time = #{locbindOperationTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectLocbindByLocbindWorkshop" parameterType="String" resultMap="LocbindResult">
+        <include refid="selectLocbindVo"/>
+        where locbind_workshop = #{locbindWorkshop}
+    </select>
+        
+    <insert id="insertLocbind" parameterType="Locbind">
+        insert into locbind
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="locbindWorkshop != null">locbind_workshop,</if>
+            <if test="locbindLocation != null and locbindLocation != ''">locbind_location,</if>
+            <if test="locbindUsername != null">locbind_username,</if>
+            <if test="locbindNickname != null">locbind_nickname,</if>
+            <if test="locbindOperator != null">locbind_operator,</if>
+            <if test="locbindOperationTime != null">locbind_operation_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="locbindWorkshop != null">#{locbindWorkshop},</if>
+            <if test="locbindLocation != null and locbindLocation != ''">#{locbindLocation},</if>
+            <if test="locbindUsername != null">#{locbindUsername},</if>
+            <if test="locbindNickname != null">#{locbindNickname},</if>
+            <if test="locbindOperator != null">#{locbindOperator},</if>
+            <if test="locbindOperationTime != null">#{locbindOperationTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLocbind" parameterType="Locbind">
+        update locbind
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="locbindLocation != null and locbindLocation != ''">locbind_location = #{locbindLocation},</if>
+            <if test="locbindUsername != null">locbind_username = #{locbindUsername},</if>
+            <if test="locbindNickname != null">locbind_nickname = #{locbindNickname},</if>
+            <if test="locbindOperator != null">locbind_operator = #{locbindOperator},</if>
+            <if test="locbindOperationTime != null">locbind_operation_time = #{locbindOperationTime},</if>
+        </trim>
+        where locbind_workshop = #{locbindWorkshop}
+    </update>
+
+    <delete id="deleteLocbindByLocbindWorkshop" parameterType="String">
+        delete from locbind where locbind_workshop = #{locbindWorkshop}
+    </delete>
+
+    <delete id="deleteLocbindByLocbindWorkshops" parameterType="String">
+        delete from locbind where locbind_workshop in 
+        <foreach item="locbindWorkshop" collection="array" open="(" separator="," close=")">
+            #{locbindWorkshop}
+        </foreach>
+    </delete>
+</mapper>

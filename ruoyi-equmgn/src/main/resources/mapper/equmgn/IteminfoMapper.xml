@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.IteminfoMapper">
+    
+    <resultMap type="Iteminfo" id="IteminfoResult">
+        <result property="iteminfoNumber"    column="iteminfo_number"    />
+        <result property="iteminfoName"    column="iteminfo_name"    />
+        <result property="iteminfoSpecificationsModels"    column="iteminfo_specifications_models"    />
+        <result property="iteminfoMeasureUnit"    column="iteminfo_measure_unit"    />
+        <result property="iteminfoSource"    column="iteminfo_source"    />
+        <result property="iteminfoStatus"    column="iteminfo_status"    />
+        <result property="iteminfoCreateTime"    column="iteminfo_create_time"    />
+    </resultMap>
+
+    <sql id="selectIteminfoVo">
+        select iteminfo_number, iteminfo_name, iteminfo_specifications_models, iteminfo_measure_unit, iteminfo_source, iteminfo_status, iteminfo_create_time from iteminfo
+    </sql>
+
+    <select id="selectIteminfoList" parameterType="Iteminfo" resultMap="IteminfoResult">
+        <include refid="selectIteminfoVo"/>
+        <where>  
+            <if test="iteminfoName != null  and iteminfoName != ''"> and iteminfo_name like concat('%', #{iteminfoName}, '%')</if>
+            <if test="iteminfoSpecificationsModels != null  and iteminfoSpecificationsModels != ''"> and iteminfo_specifications_models = #{iteminfoSpecificationsModels}</if>
+            <if test="iteminfoStatus != null "> and iteminfo_status = #{iteminfoStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectIteminfoByIteminfoNumber" parameterType="Long" resultMap="IteminfoResult">
+        <include refid="selectIteminfoVo"/>
+        where iteminfo_number = #{iteminfoNumber}
+    </select>
+        
+    <insert id="insertIteminfo" parameterType="Iteminfo">
+        insert into iteminfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="iteminfoNumber != null">iteminfo_number,</if>
+            <if test="iteminfoName != null and iteminfoName != ''">iteminfo_name,</if>
+            <if test="iteminfoSpecificationsModels != null">iteminfo_specifications_models,</if>
+            <if test="iteminfoMeasureUnit != null and iteminfoMeasureUnit != ''">iteminfo_measure_unit,</if>
+            <if test="iteminfoSource != null and iteminfoSource != ''">iteminfo_source,</if>
+            <if test="iteminfoStatus != null">iteminfo_status,</if>
+            <if test="iteminfoCreateTime != null">iteminfo_create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="iteminfoNumber != null">#{iteminfoNumber},</if>
+            <if test="iteminfoName != null and iteminfoName != ''">#{iteminfoName},</if>
+            <if test="iteminfoSpecificationsModels != null">#{iteminfoSpecificationsModels},</if>
+            <if test="iteminfoMeasureUnit != null and iteminfoMeasureUnit != ''">#{iteminfoMeasureUnit},</if>
+            <if test="iteminfoSource != null and iteminfoSource != ''">#{iteminfoSource},</if>
+            <if test="iteminfoStatus != null">#{iteminfoStatus},</if>
+            <if test="iteminfoCreateTime != null">#{iteminfoCreateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateIteminfo" parameterType="Iteminfo">
+        update iteminfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="iteminfoName != null and iteminfoName != ''">iteminfo_name = #{iteminfoName},</if>
+            <if test="iteminfoSpecificationsModels != null">iteminfo_specifications_models = #{iteminfoSpecificationsModels},</if>
+            <if test="iteminfoMeasureUnit != null and iteminfoMeasureUnit != ''">iteminfo_measure_unit = #{iteminfoMeasureUnit},</if>
+            <if test="iteminfoSource != null and iteminfoSource != ''">iteminfo_source = #{iteminfoSource},</if>
+            <if test="iteminfoStatus != null">iteminfo_status = #{iteminfoStatus},</if>
+            <if test="iteminfoCreateTime != null">iteminfo_create_time = #{iteminfoCreateTime},</if>
+        </trim>
+        where iteminfo_number = #{iteminfoNumber}
+    </update>
+
+    <delete id="deleteIteminfoByIteminfoNumber" parameterType="Long">
+        delete from iteminfo where iteminfo_number = #{iteminfoNumber}
+    </delete>
+
+    <delete id="deleteIteminfoByIteminfoNumbers" parameterType="String">
+        delete from iteminfo where iteminfo_number in 
+        <foreach item="iteminfoNumber" collection="array" open="(" separator="," close=")">
+            #{iteminfoNumber}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.LocinfoMapper">
+    
+    <resultMap type="Locinfo" id="LocinfoResult">
+        <result property="locinfoAffiliatedWorkshop"    column="locinfo_affiliated_workshop"    />
+        <result property="locinfoName"    column="locinfo_name"    />
+        <result property="locinfoNumber"    column="locinfo_number"    />
+        <result property="locinfoBindOperation"    column="locinfo_bind_operation"    />
+        <result property="locinfoBindEquipment"    column="locinfo_bind_equipment"    />
+        <result property="locinfoStatus"    column="locinfo_status"    />
+        <result property="locinfoRemark"    column="locinfo_remark"    />
+    </resultMap>
+
+    <sql id="selectLocinfoVo">
+        select locinfo_affiliated_workshop, locinfo_name, locinfo_number, locinfo_bind_operation, locinfo_bind_equipment, locinfo_status, locinfo_remark from locinfo
+    </sql>
+
+    <select id="selectLocinfoList" parameterType="Locinfo" resultMap="LocinfoResult">
+        <include refid="selectLocinfoVo"/>
+        <where>  
+            <if test="locinfoAffiliatedWorkshop != null  and locinfoAffiliatedWorkshop != ''"> and locinfo_affiliated_workshop = #{locinfoAffiliatedWorkshop}</if>
+            <if test="locinfoNumber != null  and locinfoNumber != ''"> and locinfo_number = #{locinfoNumber}</if>
+            <if test="locinfoStatus != null "> and locinfo_status = #{locinfoStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectLocinfoByLocinfoAffiliatedWorkshop" parameterType="String" resultMap="LocinfoResult">
+        <include refid="selectLocinfoVo"/>
+        where locinfo_affiliated_workshop = #{locinfoAffiliatedWorkshop}
+    </select>
+        
+    <insert id="insertLocinfo" parameterType="Locinfo">
+        insert into locinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="locinfoAffiliatedWorkshop != null">locinfo_affiliated_workshop,</if>
+            <if test="locinfoName != null and locinfoName != ''">locinfo_name,</if>
+            <if test="locinfoNumber != null and locinfoNumber != ''">locinfo_number,</if>
+            <if test="locinfoBindOperation != null">locinfo_bind_operation,</if>
+            <if test="locinfoBindEquipment != null">locinfo_bind_equipment,</if>
+            <if test="locinfoStatus != null">locinfo_status,</if>
+            <if test="locinfoRemark != null">locinfo_remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="locinfoAffiliatedWorkshop != null">#{locinfoAffiliatedWorkshop},</if>
+            <if test="locinfoName != null and locinfoName != ''">#{locinfoName},</if>
+            <if test="locinfoNumber != null and locinfoNumber != ''">#{locinfoNumber},</if>
+            <if test="locinfoBindOperation != null">#{locinfoBindOperation},</if>
+            <if test="locinfoBindEquipment != null">#{locinfoBindEquipment},</if>
+            <if test="locinfoStatus != null">#{locinfoStatus},</if>
+            <if test="locinfoRemark != null">#{locinfoRemark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLocinfo" parameterType="Locinfo">
+        update locinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="locinfoName != null and locinfoName != ''">locinfo_name = #{locinfoName},</if>
+            <if test="locinfoNumber != null and locinfoNumber != ''">locinfo_number = #{locinfoNumber},</if>
+            <if test="locinfoBindOperation != null">locinfo_bind_operation = #{locinfoBindOperation},</if>
+            <if test="locinfoBindEquipment != null">locinfo_bind_equipment = #{locinfoBindEquipment},</if>
+            <if test="locinfoStatus != null">locinfo_status = #{locinfoStatus},</if>
+            <if test="locinfoRemark != null">locinfo_remark = #{locinfoRemark},</if>
+        </trim>
+        where locinfo_affiliated_workshop = #{locinfoAffiliatedWorkshop}
+    </update>
+
+    <delete id="deleteLocinfoByLocinfoAffiliatedWorkshop" parameterType="String">
+        delete from locinfo where locinfo_affiliated_workshop = #{locinfoAffiliatedWorkshop}
+    </delete>
+
+    <delete id="deleteLocinfoByLocinfoAffiliatedWorkshops" parameterType="String">
+        delete from locinfo where locinfo_affiliated_workshop in 
+        <foreach item="locinfoAffiliatedWorkshop" collection="array" open="(" separator="," close=")">
+            #{locinfoAffiliatedWorkshop}
+        </foreach>
+    </delete>
+</mapper>

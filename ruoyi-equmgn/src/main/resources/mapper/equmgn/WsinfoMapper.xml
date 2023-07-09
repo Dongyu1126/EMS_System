@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.WsinfoMapper">
+    
+    <resultMap type="Wsinfo" id="WsinfoResult">
+        <result property="wsinfoName"    column="wsinfo_name"    />
+        <result property="wsinfoLeader"    column="wsinfo_leader"    />
+        <result property="wsinfoStatus"    column="wsinfo_status"    />
+        <result property="wsinfoCreateTime"    column="wsinfo_create_time"    />
+        <result property="wsinfoRemark"    column="wsinfo_remark"    />
+    </resultMap>
+
+    <sql id="selectWsinfoVo">
+        select wsinfo_name, wsinfo_leader, wsinfo_status, wsinfo_create_time, wsinfo_remark from wsinfo
+    </sql>
+
+    <select id="selectWsinfoList" parameterType="Wsinfo" resultMap="WsinfoResult">
+        <include refid="selectWsinfoVo"/>
+        <where>  
+            <if test="wsinfoName != null  and wsinfoName != ''"> and wsinfo_name like concat('%', #{wsinfoName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectWsinfoByWsinfoName" parameterType="String" resultMap="WsinfoResult">
+        <include refid="selectWsinfoVo"/>
+        where wsinfo_name = #{wsinfoName}
+    </select>
+        
+    <insert id="insertWsinfo" parameterType="Wsinfo">
+        insert into wsinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wsinfoName != null and wsinfoName != ''">wsinfo_name,</if>
+            <if test="wsinfoLeader != null">wsinfo_leader,</if>
+            <if test="wsinfoStatus != null">wsinfo_status,</if>
+            <if test="wsinfoCreateTime != null">wsinfo_create_time,</if>
+            <if test="wsinfoRemark != null">wsinfo_remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wsinfoName != null and wsinfoName != ''">#{wsinfoName},</if>
+            <if test="wsinfoLeader != null">#{wsinfoLeader},</if>
+            <if test="wsinfoStatus != null">#{wsinfoStatus},</if>
+            <if test="wsinfoCreateTime != null">#{wsinfoCreateTime},</if>
+            <if test="wsinfoRemark != null">#{wsinfoRemark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWsinfo" parameterType="Wsinfo">
+        update wsinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wsinfoLeader != null">wsinfo_leader = #{wsinfoLeader},</if>
+            <if test="wsinfoStatus != null">wsinfo_status = #{wsinfoStatus},</if>
+            <if test="wsinfoCreateTime != null">wsinfo_create_time = #{wsinfoCreateTime},</if>
+            <if test="wsinfoRemark != null">wsinfo_remark = #{wsinfoRemark},</if>
+        </trim>
+        where wsinfo_name = #{wsinfoName}
+    </update>
+
+    <delete id="deleteWsinfoByWsinfoName" parameterType="String">
+        delete from wsinfo where wsinfo_name = #{wsinfoName}
+    </delete>
+
+    <delete id="deleteWsinfoByWsinfoNames" parameterType="String">
+        delete from wsinfo where wsinfo_name in 
+        <foreach item="wsinfoName" collection="array" open="(" separator="," close=")">
+            #{wsinfoName}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.EquinfoMapper">
+    
+    <resultMap type="Equinfo" id="EquinfoResult">
+        <result property="equinfoName"    column="equinfo_name"    />
+        <result property="equinfoBrand"    column="equinfo_brand"    />
+        <result property="equinfoModel"    column="equinfo_model"    />
+        <result property="equinfoType"    column="equinfo_type"    />
+        <result property="equinfoStatus"    column="equinfo_status"    />
+        <result property="equinfoStartStatus"    column="equinfo_start_status"    />
+        <result property="equinfoCreateTime"    column="equinfo_create_time"    />
+        <result property="equinfoSerialNumber"    column="equinfo_serial_number"    />
+    </resultMap>
+
+    <sql id="selectEquinfoVo">
+        select equinfo_name, equinfo_brand, equinfo_model, equinfo_type, equinfo_status, equinfo_start_status, equinfo_create_time, equinfo_serial_number from equinfo
+    </sql>
+
+    <select id="selectEquinfoList" parameterType="Equinfo" resultMap="EquinfoResult">
+        <include refid="selectEquinfoVo"/>
+        <where>  
+            <if test="equinfoName != null  and equinfoName != ''"> and equinfo_name like concat('%', #{equinfoName}, '%')</if>
+            <if test="equinfoType != null  and equinfoType != ''"> and equinfo_type = #{equinfoType}</if>
+            <if test="equinfoStatus != null "> and equinfo_status = #{equinfoStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectEquinfoByEquinfoName" parameterType="String" resultMap="EquinfoResult">
+        <include refid="selectEquinfoVo"/>
+        where equinfo_name = #{equinfoName}
+    </select>
+        
+    <insert id="insertEquinfo" parameterType="Equinfo">
+        insert into equinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="equinfoName != null and equinfoName != ''">equinfo_name,</if>
+            <if test="equinfoBrand != null">equinfo_brand,</if>
+            <if test="equinfoModel != null">equinfo_model,</if>
+            <if test="equinfoType != null">equinfo_type,</if>
+            <if test="equinfoStatus != null">equinfo_status,</if>
+            <if test="equinfoStartStatus != null">equinfo_start_status,</if>
+            <if test="equinfoCreateTime != null">equinfo_create_time,</if>
+            <if test="equinfoSerialNumber != null">equinfo_serial_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="equinfoName != null and equinfoName != ''">#{equinfoName},</if>
+            <if test="equinfoBrand != null">#{equinfoBrand},</if>
+            <if test="equinfoModel != null">#{equinfoModel},</if>
+            <if test="equinfoType != null">#{equinfoType},</if>
+            <if test="equinfoStatus != null">#{equinfoStatus},</if>
+            <if test="equinfoStartStatus != null">#{equinfoStartStatus},</if>
+            <if test="equinfoCreateTime != null">#{equinfoCreateTime},</if>
+            <if test="equinfoSerialNumber != null">#{equinfoSerialNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEquinfo" parameterType="Equinfo">
+        update equinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="equinfoBrand != null">equinfo_brand = #{equinfoBrand},</if>
+            <if test="equinfoModel != null">equinfo_model = #{equinfoModel},</if>
+            <if test="equinfoType != null">equinfo_type = #{equinfoType},</if>
+            <if test="equinfoStatus != null">equinfo_status = #{equinfoStatus},</if>
+            <if test="equinfoStartStatus != null">equinfo_start_status = #{equinfoStartStatus},</if>
+            <if test="equinfoCreateTime != null">equinfo_create_time = #{equinfoCreateTime},</if>
+            <if test="equinfoSerialNumber != null">equinfo_serial_number = #{equinfoSerialNumber},</if>
+        </trim>
+        where equinfo_name = #{equinfoName}
+    </update>
+
+    <delete id="deleteEquinfoByEquinfoName" parameterType="String">
+        delete from equinfo where equinfo_name = #{equinfoName}
+    </delete>
+
+    <delete id="deleteEquinfoByEquinfoNames" parameterType="String">
+        delete from equinfo where equinfo_name in 
+        <foreach item="equinfoName" collection="array" open="(" separator="," close=")">
+            #{equinfoName}
+        </foreach>
+    </delete>
+</mapper>

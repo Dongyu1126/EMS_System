@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.OpesetMapper">
+    
+    <resultMap type="Opeset" id="OpesetResult">
+        <result property="opesetName"    column="opeset_name"    />
+        <result property="opesetDescription"    column="opeset_description"    />
+        <result property="opesetStatus"    column="opeset_status"    />
+        <result property="opesetCreateTime"    column="opeset_create_time"    />
+    </resultMap>
+
+    <sql id="selectOpesetVo">
+        select opeset_name, opeset_description, opeset_status, opeset_create_time from opeset
+    </sql>
+
+    <select id="selectOpesetList" parameterType="Opeset" resultMap="OpesetResult">
+        <include refid="selectOpesetVo"/>
+        <where>  
+            <if test="opesetName != null  and opesetName != ''"> and opeset_name like concat('%', #{opesetName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectOpesetByOpesetName" parameterType="String" resultMap="OpesetResult">
+        <include refid="selectOpesetVo"/>
+        where opeset_name = #{opesetName}
+    </select>
+        
+    <insert id="insertOpeset" parameterType="Opeset">
+        insert into opeset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="opesetName != null and opesetName != ''">opeset_name,</if>
+            <if test="opesetDescription != null">opeset_description,</if>
+            <if test="opesetStatus != null">opeset_status,</if>
+            <if test="opesetCreateTime != null">opeset_create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="opesetName != null and opesetName != ''">#{opesetName},</if>
+            <if test="opesetDescription != null">#{opesetDescription},</if>
+            <if test="opesetStatus != null">#{opesetStatus},</if>
+            <if test="opesetCreateTime != null">#{opesetCreateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOpeset" parameterType="Opeset">
+        update opeset
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="opesetDescription != null">opeset_description = #{opesetDescription},</if>
+            <if test="opesetStatus != null">opeset_status = #{opesetStatus},</if>
+            <if test="opesetCreateTime != null">opeset_create_time = #{opesetCreateTime},</if>
+        </trim>
+        where opeset_name = #{opesetName}
+    </update>
+
+    <delete id="deleteOpesetByOpesetName" parameterType="String">
+        delete from opeset where opeset_name = #{opesetName}
+    </delete>
+
+    <delete id="deleteOpesetByOpesetNames" parameterType="String">
+        delete from opeset where opeset_name in 
+        <foreach item="opesetName" collection="array" open="(" separator="," close=")">
+            #{opesetName}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.OperouMapper">
+    
+    <resultMap type="Operou" id="OperouResult">
+        <result property="operouName"    column="operou_name"    />
+        <result property="operouDescription"    column="operou_description"    />
+        <result property="operouStatus"    column="operou_status"    />
+        <result property="operouCreateTime"    column="operou_create_time"    />
+    </resultMap>
+
+    <sql id="selectOperouVo">
+        select operou_name, operou_description, operou_status, operou_create_time from operou
+    </sql>
+
+    <select id="selectOperouList" parameterType="Operou" resultMap="OperouResult">
+        <include refid="selectOperouVo"/>
+        <where>  
+            <if test="operouName != null  and operouName != ''"> and operou_name like concat('%', #{operouName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectOperouByOperouName" parameterType="String" resultMap="OperouResult">
+        <include refid="selectOperouVo"/>
+        where operou_name = #{operouName}
+    </select>
+        
+    <insert id="insertOperou" parameterType="Operou">
+        insert into operou
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="operouName != null and operouName != ''">operou_name,</if>
+            <if test="operouDescription != null">operou_description,</if>
+            <if test="operouStatus != null">operou_status,</if>
+            <if test="operouCreateTime != null">operou_create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="operouName != null and operouName != ''">#{operouName},</if>
+            <if test="operouDescription != null">#{operouDescription},</if>
+            <if test="operouStatus != null">#{operouStatus},</if>
+            <if test="operouCreateTime != null">#{operouCreateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperou" parameterType="Operou">
+        update operou
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="operouDescription != null">operou_description = #{operouDescription},</if>
+            <if test="operouStatus != null">operou_status = #{operouStatus},</if>
+            <if test="operouCreateTime != null">operou_create_time = #{operouCreateTime},</if>
+        </trim>
+        where operou_name = #{operouName}
+    </update>
+
+    <delete id="deleteOperouByOperouName" parameterType="String">
+        delete from operou where operou_name = #{operouName}
+    </delete>
+
+    <delete id="deleteOperouByOperouNames" parameterType="String">
+        delete from operou where operou_name in 
+        <foreach item="operouName" collection="array" open="(" separator="," close=")">
+            #{operouName}
+        </foreach>
+    </delete>
+</mapper>
