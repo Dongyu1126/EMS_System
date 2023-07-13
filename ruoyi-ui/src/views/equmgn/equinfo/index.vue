@@ -96,7 +96,11 @@
           <dict-tag :options="dict.type.equinfo_status" :value="scope.row.equinfoStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="启动状态" align="center" prop="equinfoStartStatus" />
+      <el-table-column label="启动状态" align="center" prop="equinfoStartStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.equinfoStartStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="添加时间" align="center" prop="equinfoCreateTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.equinfoCreateTime, '{y}-{m}-{d}') }}</span>
@@ -162,6 +166,15 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="启动状态" prop="equinfoStartStatus">
+          <el-radio-group v-model="form.equinfoStartStatus">
+            <el-radio
+              v-for="dict in dict.type.sys_normal_disable"
+              :key="dict.value"
+              :label="parseInt(dict.value)"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="添加时间" prop="equinfoCreateTime">
           <el-date-picker clearable
             v-model="form.equinfoCreateTime"
@@ -187,7 +200,7 @@ import { listEquinfo, getEquinfo, delEquinfo, addEquinfo, updateEquinfo } from "
 
 export default {
   name: "Equinfo",
-  dicts: ['equinfo_status', 'equinfo_type'],
+  dicts: ['equinfo_status', 'equinfo_type', 'sys_normal_disable'],
   data() {
     return {
       // 遮罩层

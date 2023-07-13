@@ -65,7 +65,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="工序路线名称" align="center" prop="operouName" />
       <el-table-column label="工序路线说明" align="center" prop="operouDescription" />
-      <el-table-column label="状态" align="center" prop="operouStatus" />
+      <el-table-column label="状态" align="center" prop="operouStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.operouStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="添加时间" align="center" prop="operouCreateTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.operouCreateTime, '{y}-{m}-{d}') }}</span>
@@ -108,6 +112,15 @@
         <el-form-item label="工序路线说明" prop="operouDescription">
           <el-input v-model="form.operouDescription" placeholder="请输入工序路线说明" />
         </el-form-item>
+        <el-form-item label="状态" prop="operouStatus">
+          <el-radio-group v-model="form.operouStatus">
+            <el-radio
+              v-for="dict in dict.type.sys_normal_disable"
+              :key="dict.value"
+              :label="parseInt(dict.value)"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="添加时间" prop="operouCreateTime">
           <el-date-picker clearable
             v-model="form.operouCreateTime"
@@ -130,6 +143,7 @@ import { listOperou, getOperou, delOperou, addOperou, updateOperou } from "@/api
 
 export default {
   name: "Operou",
+  dicts: ['sys_normal_disable'],
   data() {
     return {
       // 遮罩层

@@ -11,7 +11,7 @@ import com.ruoyi.equmgn.service.IWsinfoService;
  * 车间信息Service业务层处理
  * 
  * @author jiangdongyu
- * @date 2023-07-09
+ * @date 2023-07-13
  */
 @Service
 public class WsinfoServiceImpl implements IWsinfoService 

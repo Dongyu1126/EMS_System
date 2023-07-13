@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 车间信息Controller
  * 
  * @author jiangdongyu
- * @date 2023-07-09
+ * @date 2023-07-13
  */
 @RestController
 @RequestMapping("/equmgn/wsinfo")

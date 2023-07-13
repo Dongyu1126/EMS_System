@@ -64,8 +64,16 @@
     <el-table v-loading="loading" :data="wsinfoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="车间名" align="center" prop="wsinfoName" />
-      <el-table-column label="车间负责人" align="center" prop="wsinfoLeader" />
-      <el-table-column label="车间状态" align="center" prop="wsinfoStatus" />
+      <el-table-column label="车间负责人" align="center" prop="wsinfoLeader">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.user" :value="scope.row.wsinfoLeader"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="车间状态" align="center" prop="wsinfoStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.wsinfoStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="车间添加时间" align="center" prop="wsinfoCreateTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.wsinfoCreateTime, '{y}-{m}-{d}') }}</span>
@@ -107,7 +115,23 @@
           <el-input v-model="form.wsinfoName" placeholder="请输入车间名" />
         </el-form-item>
         <el-form-item label="车间负责人" prop="wsinfoLeader">
-          <el-input v-model="form.wsinfoLeader" placeholder="请输入车间负责人" />
+          <el-select v-model="form.wsinfoLeader" placeholder="请选择车间负责人">
+            <el-option
+              v-for="dict in dict.type.user"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车间状态" prop="wsinfoStatus">
+          <el-radio-group v-model="form.wsinfoStatus">
+            <el-radio
+              v-for="dict in dict.type.sys_normal_disable"
+              :key="dict.value"
+              :label="parseInt(dict.value)"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="车间添加时间" prop="wsinfoCreateTime">
           <el-date-picker clearable
@@ -134,6 +158,7 @@ import { listWsinfo, getWsinfo, delWsinfo, addWsinfo, updateWsinfo } from "@/api
 
 export default {
   name: "Wsinfo",
+  dicts: ['user', 'sys_normal_disable'],
   data() {
     return {
       // 遮罩层

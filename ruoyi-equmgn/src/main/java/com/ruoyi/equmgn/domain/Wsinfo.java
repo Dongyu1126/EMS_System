@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 车间信息对象 wsinfo
  * 
  * @author jiangdongyu
- * @date 2023-07-09
+ * @date 2023-07-13
  */
 public class Wsinfo extends BaseEntity
 {
@@ -27,7 +27,7 @@ public class Wsinfo extends BaseEntity
 
     /** 车间状态（0正常1停用） */
     @Excel(name = "车间状态", readConverterExp = "0=正常1停用")
-    private Long wsinfoStatus;
+    private Integer wsinfoStatus;
 
     /** 车间添加时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -56,12 +56,12 @@ public class Wsinfo extends BaseEntity
     {
         return wsinfoLeader;
     }
-    public void setWsinfoStatus(Long wsinfoStatus) 
+    public void setWsinfoStatus(Integer wsinfoStatus) 
     {
         this.wsinfoStatus = wsinfoStatus;
     }
 
-    public Long getWsinfoStatus() 
+    public Integer getWsinfoStatus() 
     {
         return wsinfoStatus;
     }

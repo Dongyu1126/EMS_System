@@ -181,6 +181,7 @@
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
         <module>ruoyi-equmgn</module>
+        <module>ruoyi-cpdd</module>
     </modules>
     <packaging>pom</packaging>
 

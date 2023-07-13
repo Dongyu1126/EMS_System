@@ -65,7 +65,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="工序名" align="center" prop="opesetName" />
       <el-table-column label="工序描述" align="center" prop="opesetDescription" />
-      <el-table-column label="状态" align="center" prop="opesetStatus" />
+      <el-table-column label="状态" align="center" prop="opesetStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.opesetStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="添加时间" align="center" prop="opesetCreateTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.opesetCreateTime, '{y}-{m}-{d}') }}</span>
@@ -108,6 +112,15 @@
         <el-form-item label="工序描述" prop="opesetDescription">
           <el-input v-model="form.opesetDescription" placeholder="请输入工序描述" />
         </el-form-item>
+        <el-form-item label="状态" prop="opesetStatus">
+          <el-radio-group v-model="form.opesetStatus">
+            <el-radio
+              v-for="dict in dict.type.sys_normal_disable"
+              :key="dict.value"
+              :label="parseInt(dict.value)"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="添加时间" prop="opesetCreateTime">
           <el-date-picker clearable
             v-model="form.opesetCreateTime"
@@ -130,6 +143,7 @@ import { listOpeset, getOpeset, delOpeset, addOpeset, updateOpeset } from "@/api
 
 export default {
   name: "Opeset",
+  dicts: ['sys_normal_disable'],
   data() {
     return {
       // 遮罩层

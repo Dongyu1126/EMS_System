@@ -17,6 +17,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="状态" prop="iteminfoStatus">
+        <el-select v-model="queryParams.iteminfoStatus" placeholder="请选择状态" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_normal_disable"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -76,7 +86,11 @@
       <el-table-column label="规格型号" align="center" prop="iteminfoSpecificationsModels" />
       <el-table-column label="计量单位" align="center" prop="iteminfoMeasureUnit" />
       <el-table-column label="物料来源" align="center" prop="iteminfoSource" />
-      <el-table-column label="状态" align="center" prop="iteminfoStatus" />
+      <el-table-column label="状态" align="center" prop="iteminfoStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.iteminfoStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="添加时间" align="center" prop="iteminfoCreateTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.iteminfoCreateTime, '{y}-{m}-{d}') }}</span>
@@ -125,6 +139,15 @@
         <el-form-item label="物料来源" prop="iteminfoSource">
           <el-input v-model="form.iteminfoSource" placeholder="请输入物料来源" />
         </el-form-item>
+        <el-form-item label="状态" prop="iteminfoStatus">
+          <el-radio-group v-model="form.iteminfoStatus">
+            <el-radio
+              v-for="dict in dict.type.sys_normal_disable"
+              :key="dict.value"
+              :label="parseInt(dict.value)"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="添加时间" prop="iteminfoCreateTime">
           <el-date-picker clearable
             v-model="form.iteminfoCreateTime"
@@ -147,6 +170,7 @@ import { listIteminfo, getIteminfo, delIteminfo, addIteminfo, updateIteminfo } f
 
 export default {
   name: "Iteminfo",
+  dicts: ['sys_normal_disable'],
   data() {
     return {
       // 遮罩层

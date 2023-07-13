@@ -7,7 +7,7 @@ import com.ruoyi.equmgn.domain.Wsinfo;
  * 车间信息Service接口
  * 
  * @author jiangdongyu
- * @date 2023-07-09
+ * @date 2023-07-13
  */
 public interface IWsinfoService 
 {

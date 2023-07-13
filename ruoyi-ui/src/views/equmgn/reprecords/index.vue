@@ -1,31 +1,37 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="所属车间" prop="locinfoAffiliatedWorkshop">
+      <el-form-item label="工单号" prop="reprecordsTicketNumber">
         <el-input
-          v-model="queryParams.locinfoAffiliatedWorkshop"
-          placeholder="请输入所属车间"
+          v-model="queryParams.reprecordsTicketNumber"
+          placeholder="请输入工单号"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="工位编号" prop="locinfoNumber">
+      <el-form-item label="产品" prop="reprecordsProduct">
         <el-input
-          v-model="queryParams.locinfoNumber"
-          placeholder="请输入工位编号"
+          v-model="queryParams.reprecordsProduct"
+          placeholder="请输入产品"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="locinfoStatus">
-        <el-select v-model="queryParams.locinfoStatus" placeholder="请选择状态" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_normal_disable"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+      <el-form-item label="工序" prop="reprecordsProcess">
+        <el-input
+          v-model="queryParams.reprecordsProcess"
+          placeholder="请输入工序"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="报工人" prop="reprecordsReportName">
+        <el-input
+          v-model="queryParams.reprecordsReportName"
+          placeholder="请输入报工人"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -41,7 +47,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['equmgn:locinfo:add']"
+          v-hasPermi="['equmgn:reprecords:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -52,7 +58,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['equmgn:locinfo:edit']"
+          v-hasPermi="['equmgn:reprecords:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -63,7 +69,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['equmgn:locinfo:remove']"
+          v-hasPermi="['equmgn:reprecords:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -73,25 +79,28 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['equmgn:locinfo:export']"
+          v-hasPermi="['equmgn:reprecords:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="locinfoList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="reprecordsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="所属车间" align="center" prop="locinfoAffiliatedWorkshop" />
-      <el-table-column label="工位名称" align="center" prop="locinfoName" />
-      <el-table-column label="工位编号" align="center" prop="locinfoNumber" />
-      <el-table-column label="绑定工序" align="center" prop="locinfoBindOperation" />
-      <el-table-column label="绑定设备" align="center" prop="locinfoBindEquipment" />
-      <el-table-column label="状态" align="center" prop="locinfoStatus">
+      <el-table-column label="工单号" align="center" prop="reprecordsTicketNumber" />
+      <el-table-column label="产品" align="center" prop="reprecordsProduct" />
+      <el-table-column label="排产数量" align="center" prop="reprecordsScheduleNumber" />
+      <el-table-column label="工序" align="center" prop="reprecordsProcess" />
+      <el-table-column label="报工单号" align="center" prop="reprecordsReportTicketNumber" />
+      <el-table-column label="报工时间" align="center" prop="reprecordsReportTime" width="180">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.locinfoStatus"/>
+          <span>{{ parseTime(scope.row.reprecordsReportTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="locinfoRemark" />
+      <el-table-column label="报工数量" align="center" prop="reprecordsReportNumber" />
+      <el-table-column label="报工人" align="center" prop="reprecordsReportName" />
+      <el-table-column label="车间" align="center" prop="reprecordsWorkshop" />
+      <el-table-column label="工位" align="center" prop="reprecordsWorkLocation" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -99,14 +108,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['equmgn:locinfo:edit']"
+            v-hasPermi="['equmgn:reprecords:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['equmgn:locinfo:remove']"
+            v-hasPermi="['equmgn:reprecords:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -120,36 +129,9 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改工位信息对话框 -->
+    <!-- 添加或修改报工记录对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="所属车间" prop="locinfoAffiliatedWorkshop">
-          <el-input v-model="form.locinfoAffiliatedWorkshop" placeholder="请输入所属车间" />
-        </el-form-item>
-        <el-form-item label="工位名称" prop="locinfoName">
-          <el-input v-model="form.locinfoName" placeholder="请输入工位名称" />
-        </el-form-item>
-        <el-form-item label="工位编号" prop="locinfoNumber">
-          <el-input v-model="form.locinfoNumber" placeholder="请输入工位编号" />
-        </el-form-item>
-        <el-form-item label="绑定工序" prop="locinfoBindOperation">
-          <el-input v-model="form.locinfoBindOperation" placeholder="请输入绑定工序" />
-        </el-form-item>
-        <el-form-item label="绑定设备" prop="locinfoBindEquipment">
-          <el-input v-model="form.locinfoBindEquipment" placeholder="请输入绑定设备" />
-        </el-form-item>
-        <el-form-item label="状态" prop="locinfoStatus">
-          <el-radio-group v-model="form.locinfoStatus">
-            <el-radio
-              v-for="dict in dict.type.sys_normal_disable"
-              :key="dict.value"
-              :label="parseInt(dict.value)"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="locinfoRemark">
-          <el-input v-model="form.locinfoRemark" placeholder="请输入备注" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -160,11 +142,10 @@
 </template>
 
 <script>
-import { listLocinfo, getLocinfo, delLocinfo, addLocinfo, updateLocinfo } from "@/api/equmgn/locinfo";
+import { listReprecords, getReprecords, delReprecords, addReprecords, updateReprecords } from "@/api/equmgn/reprecords";
 
 export default {
-  name: "Locinfo",
-  dicts: ['sys_normal_disable'],
+  name: "Reprecords",
   data() {
     return {
       // 遮罩层
@@ -179,8 +160,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 工位信息表格数据
-      locinfoList: [],
+      // 报工记录表格数据
+      reprecordsList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -189,20 +170,15 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        locinfoAffiliatedWorkshop: null,
-        locinfoNumber: null,
-        locinfoStatus: null,
+        reprecordsTicketNumber: null,
+        reprecordsProduct: null,
+        reprecordsProcess: null,
+        reprecordsReportName: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        locinfoName: [
-          { required: true, message: "工位名称不能为空", trigger: "blur" }
-        ],
-        locinfoNumber: [
-          { required: true, message: "工位编号不能为空", trigger: "blur" }
-        ],
       }
     };
   },
@@ -210,11 +186,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询工位信息列表 */
+    /** 查询报工记录列表 */
     getList() {
       this.loading = true;
-      listLocinfo(this.queryParams).then(response => {
-        this.locinfoList = response.rows;
+      listReprecords(this.queryParams).then(response => {
+        this.reprecordsList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -227,13 +203,16 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        locinfoAffiliatedWorkshop: null,
-        locinfoName: null,
-        locinfoNumber: null,
-        locinfoBindOperation: null,
-        locinfoBindEquipment: null,
-        locinfoStatus: null,
-        locinfoRemark: null
+        reprecordsTicketNumber: null,
+        reprecordsProduct: null,
+        reprecordsScheduleNumber: null,
+        reprecordsProcess: null,
+        reprecordsReportTicketNumber: null,
+        reprecordsReportTime: null,
+        reprecordsReportNumber: null,
+        reprecordsReportName: null,
+        reprecordsWorkshop: null,
+        reprecordsWorkLocation: null
       };
       this.resetForm("form");
     },
@@ -249,7 +228,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.locinfoAffiliatedWorkshop)
+      this.ids = selection.map(item => item.reprecordsTicketNumber)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -257,30 +236,30 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加工位信息";
+      this.title = "添加报工记录";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const locinfoAffiliatedWorkshop = row.locinfoAffiliatedWorkshop || this.ids
-      getLocinfo(locinfoAffiliatedWorkshop).then(response => {
+      const reprecordsTicketNumber = row.reprecordsTicketNumber || this.ids
+      getReprecords(reprecordsTicketNumber).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改工位信息";
+        this.title = "修改报工记录";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.locinfoAffiliatedWorkshop != null) {
-            updateLocinfo(this.form).then(response => {
+          if (this.form.reprecordsTicketNumber != null) {
+            updateReprecords(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addLocinfo(this.form).then(response => {
+            addReprecords(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -291,9 +270,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const locinfoAffiliatedWorkshops = row.locinfoAffiliatedWorkshop || this.ids;
-      this.$modal.confirm('是否确认删除工位信息编号为"' + locinfoAffiliatedWorkshops + '"的数据项？').then(function() {
-        return delLocinfo(locinfoAffiliatedWorkshops);
+      const reprecordsTicketNumbers = row.reprecordsTicketNumber || this.ids;
+      this.$modal.confirm('是否确认删除报工记录编号为"' + reprecordsTicketNumbers + '"的数据项？').then(function() {
+        return delReprecords(reprecordsTicketNumbers);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -301,9 +280,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('equmgn/locinfo/export', {
+      this.download('equmgn/reprecords/export', {
         ...this.queryParams
-      }, `locinfo_${new Date().getTime()}.xlsx`)
+      }, `reprecords_${new Date().getTime()}.xlsx`)
     }
   }
 };
