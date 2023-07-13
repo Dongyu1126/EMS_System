@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.ReprecordsMapper">
+    
+    <resultMap type="Reprecords" id="ReprecordsResult">
+        <result property="reprecordsTicketNumber"    column="reprecords_ticket_number"    />
+        <result property="reprecordsProduct"    column="reprecords_product"    />
+        <result property="reprecordsScheduleNumber"    column="reprecords_schedule_number"    />
+        <result property="reprecordsProcess"    column="reprecords_process"    />
+        <result property="reprecordsReportTicketNumber"    column="reprecords_report_ticket_number"    />
+        <result property="reprecordsReportTime"    column="reprecords_report_time"    />
+        <result property="reprecordsReportNumber"    column="reprecords_report_number"    />
+        <result property="reprecordsReportName"    column="reprecords_report_name"    />
+        <result property="reprecordsWorkshop"    column="reprecords_workshop"    />
+        <result property="reprecordsWorkLocation"    column="reprecords_work_location"    />
+    </resultMap>
+
+    <sql id="selectReprecordsVo">
+        select reprecords_ticket_number, reprecords_product, reprecords_schedule_number, reprecords_process, reprecords_report_ticket_number, reprecords_report_time, reprecords_report_number, reprecords_report_name, reprecords_workshop, reprecords_work_location from reprecords
+    </sql>
+
+    <select id="selectReprecordsList" parameterType="Reprecords" resultMap="ReprecordsResult">
+        <include refid="selectReprecordsVo"/>
+        <where>  
+            <if test="reprecordsTicketNumber != null  and reprecordsTicketNumber != ''"> and reprecords_ticket_number like concat('%', #{reprecordsTicketNumber}, '%')</if>
+            <if test="reprecordsProduct != null  and reprecordsProduct != ''"> and reprecords_product like concat('%', #{reprecordsProduct}, '%')</if>
+            <if test="reprecordsProcess != null  and reprecordsProcess != ''"> and reprecords_process like concat('%', #{reprecordsProcess}, '%')</if>
+            <if test="reprecordsReportName != null  and reprecordsReportName != ''"> and reprecords_report_name like concat('%', #{reprecordsReportName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectReprecordsByReprecordsTicketNumber" parameterType="String" resultMap="ReprecordsResult">
+        <include refid="selectReprecordsVo"/>
+        where reprecords_ticket_number = #{reprecordsTicketNumber}
+    </select>
+        
+    <insert id="insertReprecords" parameterType="Reprecords">
+        insert into reprecords
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reprecordsTicketNumber != null">reprecords_ticket_number,</if>
+            <if test="reprecordsProduct != null">reprecords_product,</if>
+            <if test="reprecordsScheduleNumber != null">reprecords_schedule_number,</if>
+            <if test="reprecordsProcess != null">reprecords_process,</if>
+            <if test="reprecordsReportTicketNumber != null">reprecords_report_ticket_number,</if>
+            <if test="reprecordsReportTime != null">reprecords_report_time,</if>
+            <if test="reprecordsReportNumber != null">reprecords_report_number,</if>
+            <if test="reprecordsReportName != null">reprecords_report_name,</if>
+            <if test="reprecordsWorkshop != null">reprecords_workshop,</if>
+            <if test="reprecordsWorkLocation != null">reprecords_work_location,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reprecordsTicketNumber != null">#{reprecordsTicketNumber},</if>
+            <if test="reprecordsProduct != null">#{reprecordsProduct},</if>
+            <if test="reprecordsScheduleNumber != null">#{reprecordsScheduleNumber},</if>
+            <if test="reprecordsProcess != null">#{reprecordsProcess},</if>
+            <if test="reprecordsReportTicketNumber != null">#{reprecordsReportTicketNumber},</if>
+            <if test="reprecordsReportTime != null">#{reprecordsReportTime},</if>
+            <if test="reprecordsReportNumber != null">#{reprecordsReportNumber},</if>
+            <if test="reprecordsReportName != null">#{reprecordsReportName},</if>
+            <if test="reprecordsWorkshop != null">#{reprecordsWorkshop},</if>
+            <if test="reprecordsWorkLocation != null">#{reprecordsWorkLocation},</if>
+         </trim>
+    </insert>
+
+    <update id="updateReprecords" parameterType="Reprecords">
+        update reprecords
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="reprecordsProduct != null">reprecords_product = #{reprecordsProduct},</if>
+            <if test="reprecordsScheduleNumber != null">reprecords_schedule_number = #{reprecordsScheduleNumber},</if>
+            <if test="reprecordsProcess != null">reprecords_process = #{reprecordsProcess},</if>
+            <if test="reprecordsReportTicketNumber != null">reprecords_report_ticket_number = #{reprecordsReportTicketNumber},</if>
+            <if test="reprecordsReportTime != null">reprecords_report_time = #{reprecordsReportTime},</if>
+            <if test="reprecordsReportNumber != null">reprecords_report_number = #{reprecordsReportNumber},</if>
+            <if test="reprecordsReportName != null">reprecords_report_name = #{reprecordsReportName},</if>
+            <if test="reprecordsWorkshop != null">reprecords_workshop = #{reprecordsWorkshop},</if>
+            <if test="reprecordsWorkLocation != null">reprecords_work_location = #{reprecordsWorkLocation},</if>
+        </trim>
+        where reprecords_ticket_number = #{reprecordsTicketNumber}
+    </update>
+
+    <delete id="deleteReprecordsByReprecordsTicketNumber" parameterType="String">
+        delete from reprecords where reprecords_ticket_number = #{reprecordsTicketNumber}
+    </delete>
+
+    <delete id="deleteReprecordsByReprecordsTicketNumbers" parameterType="String">
+        delete from reprecords where reprecords_ticket_number in 
+        <foreach item="reprecordsTicketNumber" collection="array" open="(" separator="," close=")">
+            #{reprecordsTicketNumber}
+        </foreach>
+    </delete>
+</mapper>

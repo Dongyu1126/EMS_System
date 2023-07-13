@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.equmgn.mapper.ProworkordersMapper">
+    
+    <resultMap type="Proworkorders" id="ProworkordersResult">
+        <result property="proworkordersProductStatus"    column="proworkorders_product_status"    />
+        <result property="proworkordersOrderNumber"    column="proworkorders_order_number"    />
+        <result property="proworkordersProductNumber"    column="proworkorders_product_number"    />
+        <result property="proworkordersProductName"    column="proworkorders_product_name"    />
+        <result property="proworkordersBatchNumber"    column="proworkorders_batch_number"    />
+        <result property="proworkordersUint"    column="proworkorders_uint"    />
+        <result property="proworkordersProductionQuantity"    column="proworkorders_production_quantity"    />
+        <result property="proworkordersPlanCompDate"    column="proworkorders_plan_comp_date"    />
+        <result property="proworkordersStartProduceDate"    column="proworkorders_start_produce_date"    />
+        <result property="proworkordersActualCompDate"    column="proworkorders_actual_comp_date"    />
+        <result property="proworkordersCreateTime"    column="proworkorders_create_time"    />
+        <result property="proworkordersInventor"    column="proworkorders_inventor"    />
+        <result property="proworkordersMaterial"    column="proworkorders_material"    />
+        <result property="proworkordersStatus"    column="proworkorders_status"    />
+    </resultMap>
+
+    <sql id="selectProworkordersVo">
+        select proworkorders_product_status, proworkorders_order_number, proworkorders_product_number, proworkorders_product_name, proworkorders_batch_number, proworkorders_uint, proworkorders_production_quantity, proworkorders_plan_comp_date, proworkorders_start_produce_date, proworkorders_actual_comp_date, proworkorders_create_time, proworkorders_inventor, proworkorders_material, proworkorders_status from proworkorders
+    </sql>
+
+    <select id="selectProworkordersList" parameterType="Proworkorders" resultMap="ProworkordersResult">
+        <include refid="selectProworkordersVo"/>
+        <where>  
+            <if test="proworkordersProductStatus != null  and proworkordersProductStatus != ''"> and proworkorders_product_status = #{proworkordersProductStatus}</if>
+            <if test="proworkordersOrderNumber != null  and proworkordersOrderNumber != ''"> and proworkorders_order_number like concat('%', #{proworkordersOrderNumber}, '%')</if>
+            <if test="proworkordersProductName != null  and proworkordersProductName != ''"> and proworkorders_product_name like concat('%', #{proworkordersProductName}, '%')</if>
+            <if test="proworkordersBatchNumber != null  and proworkordersBatchNumber != ''"> and proworkorders_batch_number like concat('%', #{proworkordersBatchNumber}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectProworkordersByProworkordersProductStatus" parameterType="String" resultMap="ProworkordersResult">
+        <include refid="selectProworkordersVo"/>
+        where proworkorders_product_status = #{proworkordersProductStatus}
+    </select>
+        
+    <insert id="insertProworkorders" parameterType="Proworkorders">
+        insert into proworkorders
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="proworkordersProductStatus != null">proworkorders_product_status,</if>
+            <if test="proworkordersOrderNumber != null and proworkordersOrderNumber != ''">proworkorders_order_number,</if>
+            <if test="proworkordersProductNumber != null">proworkorders_product_number,</if>
+            <if test="proworkordersProductName != null">proworkorders_product_name,</if>
+            <if test="proworkordersBatchNumber != null">proworkorders_batch_number,</if>
+            <if test="proworkordersUint != null">proworkorders_uint,</if>
+            <if test="proworkordersProductionQuantity != null">proworkorders_production_quantity,</if>
+            <if test="proworkordersPlanCompDate != null">proworkorders_plan_comp_date,</if>
+            <if test="proworkordersStartProduceDate != null">proworkorders_start_produce_date,</if>
+            <if test="proworkordersActualCompDate != null">proworkorders_actual_comp_date,</if>
+            <if test="proworkordersCreateTime != null">proworkorders_create_time,</if>
+            <if test="proworkordersInventor != null">proworkorders_inventor,</if>
+            <if test="proworkordersMaterial != null and proworkordersMaterial != ''">proworkorders_material,</if>
+            <if test="proworkordersStatus != null">proworkorders_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="proworkordersProductStatus != null">#{proworkordersProductStatus},</if>
+            <if test="proworkordersOrderNumber != null and proworkordersOrderNumber != ''">#{proworkordersOrderNumber},</if>
+            <if test="proworkordersProductNumber != null">#{proworkordersProductNumber},</if>
+            <if test="proworkordersProductName != null">#{proworkordersProductName},</if>
+            <if test="proworkordersBatchNumber != null">#{proworkordersBatchNumber},</if>
+            <if test="proworkordersUint != null">#{proworkordersUint},</if>
+            <if test="proworkordersProductionQuantity != null">#{proworkordersProductionQuantity},</if>
+            <if test="proworkordersPlanCompDate != null">#{proworkordersPlanCompDate},</if>
+            <if test="proworkordersStartProduceDate != null">#{proworkordersStartProduceDate},</if>
+            <if test="proworkordersActualCompDate != null">#{proworkordersActualCompDate},</if>
+            <if test="proworkordersCreateTime != null">#{proworkordersCreateTime},</if>
+            <if test="proworkordersInventor != null">#{proworkordersInventor},</if>
+            <if test="proworkordersMaterial != null and proworkordersMaterial != ''">#{proworkordersMaterial},</if>
+            <if test="proworkordersStatus != null">#{proworkordersStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProworkorders" parameterType="Proworkorders">
+        update proworkorders
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="proworkordersOrderNumber != null and proworkordersOrderNumber != ''">proworkorders_order_number = #{proworkordersOrderNumber},</if>
+            <if test="proworkordersProductNumber != null">proworkorders_product_number = #{proworkordersProductNumber},</if>
+            <if test="proworkordersProductName != null">proworkorders_product_name = #{proworkordersProductName},</if>
+            <if test="proworkordersBatchNumber != null">proworkorders_batch_number = #{proworkordersBatchNumber},</if>
+            <if test="proworkordersUint != null">proworkorders_uint = #{proworkordersUint},</if>
+            <if test="proworkordersProductionQuantity != null">proworkorders_production_quantity = #{proworkordersProductionQuantity},</if>
+            <if test="proworkordersPlanCompDate != null">proworkorders_plan_comp_date = #{proworkordersPlanCompDate},</if>
+            <if test="proworkordersStartProduceDate != null">proworkorders_start_produce_date = #{proworkordersStartProduceDate},</if>
+            <if test="proworkordersActualCompDate != null">proworkorders_actual_comp_date = #{proworkordersActualCompDate},</if>
+            <if test="proworkordersCreateTime != null">proworkorders_create_time = #{proworkordersCreateTime},</if>
+            <if test="proworkordersInventor != null">proworkorders_inventor = #{proworkordersInventor},</if>
+            <if test="proworkordersMaterial != null and proworkordersMaterial != ''">proworkorders_material = #{proworkordersMaterial},</if>
+            <if test="proworkordersStatus != null">proworkorders_status = #{proworkordersStatus},</if>
+        </trim>
+        where proworkorders_product_status = #{proworkordersProductStatus}
+    </update>
+
+    <delete id="deleteProworkordersByProworkordersProductStatus" parameterType="String">
+        delete from proworkorders where proworkorders_product_status = #{proworkordersProductStatus}
+    </delete>
+
+    <delete id="deleteProworkordersByProworkordersProductStatuss" parameterType="String">
+        delete from proworkorders where proworkorders_product_status in 
+        <foreach item="proworkordersProductStatus" collection="array" open="(" separator="," close=")">
+            #{proworkordersProductStatus}
+        </foreach>
+    </delete>
+</mapper>
